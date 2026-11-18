@@ -437,7 +437,7 @@ function buildLobby(){
 
 /* ---------------- 크리스마스 트리 (중앙) ---------------- */
 const TREE={lights:null};
-function buildTree(){const g=new THREE.Group();g.position.set(-5.6,0,14.6);scene.add(g);
+function buildTree(){const g=new THREE.Group();g.position.set(0,0,0);scene.add(g);
  const green=new THREE.MeshStandardMaterial({color:0x1d4a2c,roughness:0.75,flatShading:true});
  mesh(new THREE.CylinderGeometry(0.22,0.3,0.9,10),new THREE.MeshStandardMaterial({color:0x4a2e1a,roughness:0.9}),0,0.45,0,g);
  mesh(new THREE.CylinderGeometry(1.05,1.15,0.5,32),GOLD(),0,0.25,0,g);
@@ -458,7 +458,7 @@ function buildTree(){const g=new THREE.Group();g.position.set(-5.6,0,14.6);scene
  const star=new THREE.Mesh(new THREE.ExtrudeGeometry(st,{depth:0.08,bevelEnabled:false}),new THREE.MeshStandardMaterial({color:0xffd86a,emissive:0xffb830,emissiveIntensity:1.2,metalness:0.4,roughness:0.3}));
  star.position.set(0,7.2,-0.04);g.add(star);spinners.push(star);
  const tl=new THREE.PointLight(0xffd59a,0.7,12,1.6);tl.position.set(0,3.5,1.5);g.add(tl);
- occ(g,2.3);OBST.push({x:-5.6,z:14.6,r:2.0});}
+ occ(g,2.3);OBST.push({x:0,z:0,r:2.0});}
 
 /* ---------------- 직원 의전 (입구 일렬 · 90도 인사) ---------------- */
 function makeStaff(look){const f=makeFigure(look);f.updateMatrixWorld(true);const u=f.userData,rig=u.rig,up=new THREE.Group();up.position.y=0.46;rig.add(up);up.updateMatrixWorld(true);

@@ -58,13 +58,14 @@ def build_rows(data):
                 continue
             seen.add(link)
             mall = clean(it.get("mall_name"), 20) or "특가"
-            sale, org = to_int(it.get("price_sale")), to_int(it.get("price_org"))
-            price = f"{sale:,}원" if sale else ""
-            if sale and org > sale:
-                pct = round((org - sale) * 100 / org)
-                desc = f"{mall} · 정가 {org:,}원에서 {pct}% 할인"
+            # 가격은 애드픽이 준 숫자를 그대로 쓴다. 할인율 같은 계산값은 만들지 않는다.
+            sale_txt = clean(it.get("price_sale"), 20)
+            org_txt = clean(it.get("price_org"), 20)
+            price = f"{sale_txt}원" if to_int(sale_txt) else ""
+            if to_int(org_txt) and org_txt != sale_txt:
+                desc = f"{mall} · 애드픽 표시 원가 {org_txt}원"
             else:
-                desc = f"{mall} 특가"
+                desc = mall
             img = https_only(it.get("photo"))
             rows.append([mall, name, price, link, desc, img])
             if len(rows) >= MAX_ITEMS:

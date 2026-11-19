@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>🏬 EMPIRE 쇼핑몰 · 명품관</title>
-<meta name="description" content="쿠팡관·알리관·네이버관이 입점한 3D 쇼핑몰. 구매하시면 쇼핑몰 주인인 제가 수수료를 받습니다.">
+<meta name="description" content="쿠팡관·알리관·핫딜관이 입점한 3D 쇼핑몰. 구매하시면 쇼핑몰 주인인 제가 수수료를 받습니다.">
 <meta property="og:title" content="🏬 EMPIRE 쇼핑몰 — 쿠팡·알리·네이버 입점">
 <meta property="og:description" content="너네 아직도 쿠팡한테 일해주냐? 나는 걔네를 내 백화점에 입점시켰다.">
 <meta name="theme-color" content="#07070c">
@@ -172,6 +172,7 @@ html,body{background:#07070c;}
 .oCat{font-family:'Noto Serif KR',serif;font-weight:800;color:#e9cd8a;font-size:15px;margin:14px 2px 6px;border-bottom:1px solid #2a2518;padding-bottom:4px;}
 .oCat.sale{color:#ff6a5a;}
 .oItem{display:flex;align-items:center;gap:10px;background:#17161c;border:1px solid #26232a;border-radius:14px;padding:10px 12px;margin-bottom:7px;}
+.oItem img.oImg{width:56px;height:56px;object-fit:cover;border-radius:9px;flex:none;background:#222;}
 .oTx{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;}.oTx b{font-size:14px;}.oPrice{font-size:12.5px;color:#e9cd8a;font-weight:800;}.oTx small{font-size:11px;opacity:.6;}
 .oItem a.oItemBtn{display:inline-block;text-decoration:none;border-radius:11px;padding:9px 11px;font-weight:800;font-size:12px;white-space:nowrap;background:linear-gradient(135deg,#b08d57,#e9cd8a);color:#1a140a;}
 .oItem button{border:none;border-radius:11px;padding:9px 11px;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap;background:linear-gradient(135deg,#b08d57,#e9cd8a);color:#1a140a;}
@@ -195,7 +196,7 @@ html,body{background:#07070c;}
 <div id="bar">
   <button class="btn glass hot" id="bCoupang"><span class="ic">🚀</span>쿠팡관</button>
   <button class="btn glass hot" id="bAli"><span class="ic">✈️</span>알리관</button>
-  <button class="btn glass hot" id="bNaver"><span class="ic">🛍️</span>네이버관</button>
+  <button class="btn glass hot" id="bHot"><span class="ic">🔥</span>핫딜관</button>
   <button class="btn glass" id="bTalk"><span class="ic">💬</span>말하기</button>
   <button class="btn glass" id="bSnap"><span class="ic">📸</span>사진</button>
 </div>
@@ -209,7 +210,7 @@ html,body{background:#07070c;}
   <div id="ecard">
     <div class="orb">🏬</div>
     <h1>EMPIRE 쇼핑몰</h1>
-    <p class="sub">쿠팡관 · 알리관 · 네이버관 입점</p>
+    <p class="sub">쿠팡관 · 알리관 · 핫딜관 입점</p>
     <p class="owner">구매하시면 쇼핑몰 주인인 제가 수수료를 받습니다 🙇</p>
     <label>내 이름</label>
     <input id="nick" maxlength="8" placeholder="손님" autocomplete="off">
@@ -224,7 +225,7 @@ html,body{background:#07070c;}
 <script>
 /* =========================================================
    EMPIRE 쇼핑몰 · 명품관  v1 (2026-11-19)
-   쿠팡관 · 알리관 · 네이버관 — 매장은 보는 곳, 주문은 주문서로
+   쿠팡관 · 알리관 · 핫딜관 — 매장은 보는 곳, 주문은 주문서로
    ========================================================= */
 /* 2026-11-19: 블로그 안(iframe)에서는 폰이 팝업을 막아서 주문 버튼을 진짜 링크로 바꿈. iframe 안이면 화면 전체(_top)를 넘기고, 전체화면이면 새 창 */
 const IN_FRAME=(()=>{try{return window.self!==window.top;}catch(e){return true;}})();
@@ -235,11 +236,11 @@ const HALLS=[
   disc:'이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.',btn:'쿠팡에서 보기',css:'linear-gradient(135deg,#7a0c1d,#c8102e)'},
  {id:'ali',name:'알리관',file:'알리',emoji:'✈️',color:0xc2410c,glow:0xff8a3a,ang:Math.PI*0.68,sub:'GLOBAL SELECT',
   disc:'알리익스프레스 링크는 애드픽 제휴 광고 링크이며, 링크를 통해 구매하면 일정액의 수수료를 받을 수 있습니다.',btn:'알리에서 보기',css:'linear-gradient(135deg,#8a2c06,#e8590c)'},
- {id:'naver',name:'네이버관',file:'네이버',emoji:'🛍️',color:0x067a3a,glow:0x3ae08a,ang:-Math.PI*0.68,sub:'GREEN EDITION · 내부 공사중 🚧',wait:true,
-  disc:'네이버관 상품은 리아과학 블로그 글로 연결됩니다. 그 글의 네이버 쇼핑 커넥트 링크로 구매하면 판매 수수료를 받을 수 있습니다.',btn:'네이버에서 보기',css:'linear-gradient(135deg,#04512a,#03a454)'},
+ {id:'hotdeal',name:'핫딜관',file:'핫딜',emoji:'🔥',color:0x7c2d92,glow:0xff5ad8,ang:-Math.PI*0.68,sub:'TODAY HOT DEAL · 매일 아침 자동 갱신',
+  disc:'핫딜관 상품 링크는 애드픽 제휴 링크입니다. 이 링크를 통해 구매하시면 쇼핑몰 주인이 수수료를 제공받습니다. 가격은 갱신 시점 기준이라 실제 판매가와 다를 수 있어요.',btn:'특가 보기',css:'linear-gradient(135deg,#4a1260,#b5179e)'},
 ];
 const CONCIERGE_LINES=['어서 오세요, EMPIRE 쇼핑몰입니다','주문은 아래 주문서에서 하시면 됩니다','오늘의 세일은 주문서 맨 위에 있어요','천천히 둘러보세요 ✨'];
-const GUEST_LINES=['여기 분위기 미쳤다','쿠팡관 진짜 명품관 같네','세일부터 보자','알리관 조명 예쁘다','네이버관 초록색 고급지다','쇼핑몰 주인이 수수료 받는대 ㅋㅋ','사진 찍고 가자 📸'];
+const GUEST_LINES=['여기 분위기 미쳤다','쿠팡관 진짜 명품관 같네','세일부터 보자','알리관 조명 예쁘다','핫딜관 오늘 뭐 떴지 🔥','쇼핑몰 주인이 수수료 받는대 ㅋㅋ','사진 찍고 가자 📸'];
 
 const R_FLOOR=22,R_WALK=13.2,R_HALL=17.2;const STAFF=[];
 let scene,camera,renderer,raycaster,pointer,clock;
@@ -532,7 +533,7 @@ function parseCSV(t){const out=[];for(const raw of t.split(/\r?\n/)){const line=
  const cells=[];let cur='',q=false;for(let i=0;i<line.length;i++){const ch=line[i];if(q){if(ch==='"'){if(line[i+1]==='"'){cur+='"';i++;}else q=false;}else cur+=ch;}
   else if(ch==='"')q=true;else if(ch===','){cells.push(cur);cur='';}else cur+=ch;}cells.push(cur);out.push(cells.map(s=>s.trim()));}
  if(out.length&&out[0][0]==='카테고리')out.shift();
- return out.map(r=>({cat:r[0]||'기타',name:r[1]||'',price:r[2]||'',link:/^https:\/\//i.test(r[3]||'')?r[3]:'',desc:r[4]||''})).filter(r=>r.name);}
+ return out.map(r=>({cat:r[0]||'기타',name:r[1]||'',price:r[2]||'',link:/^https:\/\//i.test(r[3]||'')?r[3]:'',desc:r[4]||'',img:/^https:\/\//i.test(r[5]||'')?r[5]:''})).filter(r=>r.name);}
 function loadOrders(h){orders[h.id]=null;
  fetch('주문서/'+encodeURIComponent(h.file)+'.csv?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{orders[h.id]=parseCSV(t);if(curHall===h)renderOrders(h);})
   .catch(()=>{orders[h.id]=[];if(curHall===h)renderOrders(h);});}
@@ -549,6 +550,7 @@ function renderOrders(h){const box=document.getElementById('oList');box.textCont
  const rk=c=>/바로/.test(c)?2:/세일/.test(c)?1:0;cats.sort((a,b)=>rk(b)-rk(a));
  cats.forEach(c=>{const hd=document.createElement('div');hd.className='oCat'+(/세일/.test(c)?' sale':'');hd.textContent=(/바로/.test(c)?'🚪 ':/세일/.test(c)?'🔥 ':'')+c;box.appendChild(hd);
   rows.filter(r=>r.cat===c).forEach(r=>{const it=document.createElement('div');it.className='oItem';
+   if(r.img){const im=document.createElement('img');im.className='oImg';im.loading='lazy';im.referrerPolicy='no-referrer';im.alt='';im.src=r.img;im.onerror=()=>im.remove();it.appendChild(im);}
    const tx=document.createElement('div');tx.className='oTx';const n=document.createElement('b');n.textContent=r.name;tx.appendChild(n);
    if(r.price){const p=document.createElement('span');p.className='oPrice';p.textContent=r.price;tx.appendChild(p);}
    if(r.desc){const d=document.createElement('small');d.textContent=r.desc;tx.appendChild(d);}
@@ -588,7 +590,7 @@ function snap(){const f=document.getElementById('flash');sfx('snap');renderer.re
 let toastT;
 function toast(m){const h=document.getElementById('hint');h.textContent=m;h.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>h.classList.remove('show'),2800);}
 function bindUI(){const $=id=>document.getElementById(id);
- $('bCoupang').onclick=()=>openHall(HALLS[0]);$('bAli').onclick=()=>openHall(HALLS[1]);$('bNaver').onclick=()=>openHall(HALLS[2]);
+ $('bCoupang').onclick=()=>openHall(HALLS[0]);$('bAli').onclick=()=>openHall(HALLS[1]);$('bHot').onclick=()=>openHall(HALLS[2]);
  $('oClose').onclick=closeHall;$('bSnap').onclick=snap;$('snd').onclick=()=>{audioStart();setMute(!AU.on);};
  const tk=$('talk');$('bTalk').onclick=()=>tk.classList.toggle('open');
  [['😊 기뻐','happy'],['😭 울기','cry']].forEach(([l,k])=>{const b=document.createElement('button');b.className='emo';b.textContent=l;b.onclick=()=>{tk.classList.remove('open');doReact(k);};tk.appendChild(b);});
@@ -605,7 +607,7 @@ function bindUI(){const $=id=>document.getElementById(id);
   camGoal={a:0,t:0.46,d:innerWidth<innerHeight?32:27,slow:true};
   setTimeout(()=>goto(0,16.5),900);
   setTimeout(()=>say(window.deskF.f,'어서 오세요, EMPIRE 쇼핑몰입니다 ✨',3),3200);
-  setTimeout(()=>toast('🏬 아래 🚀쿠팡관 · ✈️알리관 · 🛍️네이버관 버튼 → 바로 주문서'),2600);
+  setTimeout(()=>toast('🏬 아래 🚀쿠팡관 · ✈️알리관 · 🔥핫딜관 버튼 → 바로 주문서'),2600);
   setTimeout(()=>toast('👆 매장을 콕 눌러도 주문서가 열려요 · 화면 끌면 360°'),6600);};}
 function recolorPlayer(){const old=player.f;const p=old.position.clone(),r=old.rotation.y;
  const nf=makeFigure({robe:myColor,top:0xf6efe4,hair:0x2a2018,skin:0xf2c9a0,style:'p',ribbon:0xd8b36a});
@@ -822,7 +824,7 @@ function duck(on){if(AU.mus)AU.mus.gain.setTargetAtTime(on?0.04:0.2,AU.ctx.curre
 
 
 /* ---------------- 같이 접속 (내 서버 없음 · 무료 공개 MQTT 중계소) ---------------- */
-const PHRASES=['안녕하세요 👋','여기 명품관 같다 ✨','세일 뭐 있어요?','쿠팡관 가봐요 🚀','알리관 구경 ✈️','네이버관 고급지다 🛍️','같이 사진 찍어요 📸','또 만나요 👋'];
+const PHRASES=['안녕하세요 👋','여기 명품관 같다 ✨','세일 뭐 있어요?','쿠팡관 가봐요 🚀','알리관 구경 ✈️','핫딜관 털자 🔥','같이 사진 찍어요 📸','또 만나요 👋'];
 const BROKERS=window.TEST_BROKERS||['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt','wss://test.mosquitto.org:8081/mqtt'];
 const NET={c:null,ok:false,id:Math.random().toString(36).slice(2,10),topic:'lia-online-department/v1/main',peers:new Map(),hb:0,since:9,lastKey:'',lod:0};
 const FULL_MAX=(Math.min(innerWidth,innerHeight)<600)?12:22;

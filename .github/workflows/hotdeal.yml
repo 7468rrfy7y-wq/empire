@@ -1,0 +1,32 @@
+name: 핫딜관 자동 갱신
+
+on:
+  schedule:
+    - cron: "43 21 * * *"   # 매일 한국 시간 오전 6시 43분
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hotdeal
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 애드픽 핫딜 받아 오기
+        run: python3 scripts/hotdeal.py
+      - name: 바뀐 게 있으면 저장
+        run: |
+          if git diff --quiet -- "주문서/핫딜.csv"; then
+            echo "변경 없음"
+            exit 0
+          fi
+          git config user.name "empire-hotdeal-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "주문서/핫딜.csv"
+          git commit -m "핫딜관: 오늘의 특가 자동 갱신"
+          git push

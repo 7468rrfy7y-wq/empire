@@ -62,12 +62,10 @@ def build_rows(data):
             sale_txt = clean(it.get("price_sale"), 20)
             org_txt = clean(it.get("price_org"), 20)
             price = f"{sale_txt}원" if to_int(sale_txt) else ""
-            if to_int(org_txt) and org_txt != sale_txt:
-                desc = f"{mall} · 애드픽 표시 원가 {org_txt}원"
-            else:
-                desc = mall
+            org = f"{org_txt}원" if to_int(org_txt) > to_int(sale_txt) > 0 else ""
+            desc = mall
             img = https_only(it.get("photo"))
-            rows.append([mall, name, price, link, desc, img])
+            rows.append([mall, name, price, link, desc, img, org])
             if len(rows) >= MAX_ITEMS:
                 return rows
     return rows
@@ -88,7 +86,7 @@ def main():
     buf.write("# 핫딜관 주문서 — 애드픽 핫딜 API에서 하루 한 번 자동으로 채워져요. 손으로 고치지 마세요.\n")
     buf.write(f"# 마지막 갱신: {kst} (한국 시간) · 상품 {len(rows)}개\n")
     w = csv.writer(buf, lineterminator="\n")
-    w.writerow(["카테고리", "상품명", "가격", "링크", "한줄설명", "이미지"])
+    w.writerow(["카테고리", "상품명", "가격", "링크", "한줄설명", "이미지", "원가"])
     w.writerows(rows)
     new = buf.getvalue()
     old = open(OUT, encoding="utf-8").read() if os.path.exists(OUT) else ""

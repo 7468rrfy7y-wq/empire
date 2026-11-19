@@ -172,8 +172,8 @@ html,body{background:#07070c;}
 .oCat{font-family:'Noto Serif KR',serif;font-weight:800;color:#e9cd8a;font-size:15px;margin:14px 2px 6px;border-bottom:1px solid #2a2518;padding-bottom:4px;}
 .oCat.sale{color:#ff6a5a;}
 .oItem{display:flex;align-items:center;gap:10px;background:#17161c;border:1px solid #26232a;border-radius:14px;padding:10px 12px;margin-bottom:7px;}
-.oPct{display:inline-block;color:#ff3b3b;font-weight:900;font-size:12px;padding:2px 7px;margin-left:2px;border:2px solid #ff3b3b;border-radius:999px;outline:2px solid #ff3b3b;outline-offset:2px;white-space:nowrap;}
-.oOrg{display:inline-block;width:max-content;font-size:12.5px;font-weight:800;color:#ffffff;letter-spacing:.1px;text-decoration:underline;text-decoration-style:double;text-decoration-color:#ff3b3b;text-decoration-thickness:1.5px;text-underline-offset:4px;padding-bottom:3px;}
+.oPct{color:#ff3b3b;font-weight:900;white-space:nowrap;}
+.oOrg{display:inline-block;width:max-content;font-size:12.5px;font-weight:800;color:#ffffff;letter-spacing:.1px;text-decoration:underline;text-decoration-style:solid;text-decoration-color:#ff3b3b;text-decoration-thickness:1.5px;text-underline-offset:4px;padding-bottom:3px;}
 .oItem img.oImg{width:56px;height:56px;object-fit:cover;border-radius:9px;flex:none;background:#222;}
 .oTx{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;}.oTx b{font-size:14px;}.oPrice{font-size:12.5px;color:#e9cd8a;font-weight:800;}.oTx small{font-size:11px;opacity:.6;}
 .oItem a.oItemBtn{display:inline-block;text-decoration:none;border-radius:11px;padding:9px 11px;font-weight:800;font-size:12px;white-space:nowrap;background:linear-gradient(135deg,#b08d57,#e9cd8a);color:#1a140a;}
@@ -555,7 +555,7 @@ function renderOrders(h){const box=document.getElementById('oList');box.textCont
    if(r.img){const im=document.createElement('img');im.className='oImg';im.loading='lazy';im.referrerPolicy='no-referrer';im.alt='';im.src=r.img;im.onerror=()=>im.remove();it.appendChild(im);}
    const tx=document.createElement('div');tx.className='oTx';const n=document.createElement('b');n.textContent=r.name;tx.appendChild(n);
    if(r.price){const p=document.createElement('span');p.className='oPrice';const num=x=>parseInt(String(x).replace(/[^0-9]/g,''),10)||0;const sv=num(r.price),ov=num(r.org);
-    if(r.org&&ov>sv&&sv>0){p.textContent='핫딜가 '+r.price+' ';const pc=document.createElement('span');pc.className='oPct';pc.textContent='(원가 대비 -'+Math.round((ov-sv)*100/ov)+'%)';p.appendChild(pc);tx.appendChild(p);
+    if(r.org&&ov>sv&&sv>0){p.textContent='핫딜가 '+r.price+' ';const pc=document.createElement('span');pc.className='oPct';pc.textContent='(-'+Math.round((ov-sv)*100/ov)+'%)';p.appendChild(pc);tx.appendChild(p);
      const o=document.createElement('span');o.className='oOrg';o.textContent='애드픽 표시 원가 '+r.org;tx.appendChild(o);}
     else{p.textContent=r.price;tx.appendChild(p);}}
    if(r.desc){const d=document.createElement('small');d.textContent=r.desc;tx.appendChild(d);}

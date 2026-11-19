@@ -13,13 +13,17 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.request
 from datetime import datetime, timedelta, timezone
 
 AFFID = os.environ.get("ADPICK_AFFID", "ee254f")
 API = f"https://adpick.co.kr/apis/sdk_shopping_hotdeal.php?affid={AFFID}&viewlist=30"
 OUT = os.path.join(os.path.dirname(__file__), "..", "주문서", "핫딜.csv")
-MAX_ITEMS = 30
+MAX_ITEMS = 40
+CALLS = int(os.environ.get("HOTDEAL_CALLS", "6"))   # 애드픽 규칙: 1분에 1번 이하 → 호출 사이 65초 쉼
+GAP_SEC = 65
+PRIORITY_MALLS = ("필웨이",)   # 명품: 최대한 많이, 맨 앞에
 
 
 def clean(text, limit=80):
@@ -44,40 +48,54 @@ def fetch():
         return json.loads(r.read().decode("utf-8"))
 
 
-def build_rows(data):
-    rows = []
+def build_rows(themes_list):
+    """여러 번 받아 온 피드를 합치고, 필웨이(명품)를 맨 앞에, 그다음 할인율 높은 순."""
+    items = []
     seen = set()
-    for theme in data if isinstance(data, list) else []:
-        for it in theme.get("list", []) or []:
-            name = clean(it.get("product_name"), 70)
-            link = https_only(it.get("buyurl"))
-            # 내 회원 코드로 잡히는 애드픽 링크만 받는다
-            if not name or not link.startswith("https://adpick.co.kr/") or f"affid={AFFID}" not in link:
-                continue
-            if link in seen:
-                continue
-            seen.add(link)
-            mall = clean(it.get("mall_name"), 20) or "특가"
-            # 가격은 애드픽이 준 숫자를 그대로 쓴다. 할인율 같은 계산값은 만들지 않는다.
-            sale_txt = clean(it.get("price_sale"), 20)
-            org_txt = clean(it.get("price_org"), 20)
-            price = f"{sale_txt}원" if to_int(sale_txt) else ""
-            org = f"{org_txt}원" if to_int(org_txt) > to_int(sale_txt) > 0 else ""
-            desc = mall
-            img = https_only(it.get("photo"))
-            rows.append([mall, name, price, link, desc, img, org])
-            if len(rows) >= MAX_ITEMS:
-                return rows
-    return rows
+    for data in themes_list:
+        for theme in data if isinstance(data, list) else []:
+            for it in theme.get("list", []) or []:
+                name = clean(it.get("product_name"), 70)
+                link = https_only(it.get("buyurl"))
+                # 내 회원 코드로 잡히는 애드픽 링크만 받는다
+                if not name or not link.startswith("https://adpick.co.kr/") or f"affid={AFFID}" not in link:
+                    continue
+                if link in seen:
+                    continue
+                seen.add(link)
+                mall = clean(it.get("mall_name"), 20) or "특가"
+                # 가격은 애드픽이 준 숫자를 그대로 쓴다
+                sale_txt = clean(it.get("price_sale"), 20)
+                org_txt = clean(it.get("price_org"), 20)
+                sale, org_v = to_int(sale_txt), to_int(org_txt)
+                price = f"{sale_txt}원" if sale else ""
+                org = f"{org_txt}원" if org_v > sale > 0 else ""
+                rate = (org_v - sale) / org_v if org else 0.0
+                img = https_only(it.get("photo"))
+                prio = 0 if mall in PRIORITY_MALLS else 1
+                items.append((prio, -rate, [mall, name, price, link, mall, img, org]))
+    items.sort(key=lambda x: (x[0], x[1]))
+    return [row for _, _, row in items[:MAX_ITEMS]]
+
+
+def fetch_many():
+    got = []
+    for i in range(CALLS):
+        if i:
+            time.sleep(GAP_SEC)
+        try:
+            got.append(fetch())
+        except Exception as e:
+            print(f"{i + 1}번째 호출 실패: {e}")
+    return got
 
 
 def main():
-    try:
-        data = fetch()
-    except Exception as e:  # 네트워크·JSON 오류 → 기존 파일 유지
-        print(f"API 실패, 기존 주문서 유지: {e}")
+    batches = fetch_many()
+    if not batches:
+        print("API 실패, 기존 주문서 유지")
         return 0
-    rows = build_rows(data)
+    rows = build_rows(batches)
     if not rows:
         print("받아 온 상품이 없어서 기존 주문서 유지")
         return 0

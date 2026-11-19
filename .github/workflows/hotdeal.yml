@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: 애드픽 핫딜 받아 오기
+      - name: 애드픽 핫딜 받아 오기 (6번, 1분 넘게 간격)
         run: python3 scripts/hotdeal.py
       - name: 바뀐 게 있으면 저장
         run: |

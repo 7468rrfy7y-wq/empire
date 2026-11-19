@@ -173,6 +173,7 @@ html,body{background:#07070c;}
 .oCat.sale{color:#ff6a5a;}
 .oItem{display:flex;align-items:center;gap:10px;background:#17161c;border:1px solid #26232a;border-radius:14px;padding:10px 12px;margin-bottom:7px;}
 .oTx{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;}.oTx b{font-size:14px;}.oPrice{font-size:12.5px;color:#e9cd8a;font-weight:800;}.oTx small{font-size:11px;opacity:.6;}
+.oItem a.oItemBtn{display:inline-block;text-decoration:none;border-radius:11px;padding:9px 11px;font-weight:800;font-size:12px;white-space:nowrap;background:linear-gradient(135deg,#b08d57,#e9cd8a);color:#1a140a;}
 .oItem button{border:none;border-radius:11px;padding:9px 11px;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap;background:linear-gradient(135deg,#b08d57,#e9cd8a);color:#1a140a;}
 .oItem button:disabled{background:#2a2830;color:#8a8590;cursor:default;}
 .oEmpty{padding:30px 10px;text-align:center;opacity:.7;font-size:13px;}
@@ -225,6 +226,8 @@ html,body{background:#07070c;}
    EMPIRE 쇼핑몰 · 명품관  v1 (2026-11-19)
    쿠팡관 · 알리관 · 네이버관 — 매장은 보는 곳, 주문은 주문서로
    ========================================================= */
+/* 2026-11-19: 블로그 안(iframe)에서는 폰이 팝업을 막아서 주문 버튼을 진짜 링크로 바꿈. iframe 안이면 화면 전체(_top)를 넘기고, 전체화면이면 새 창 */
+const IN_FRAME=(()=>{try{return window.self!==window.top;}catch(e){return true;}})();
 const OUTFITS=[0x1a1a1a,0xf4efe6,0x7a1f2b,0x1f3a5f,0xb08d57,0x3d5a45];
 const OWNER_LINE='구매하시면 쇼핑몰 주인인 제가 수수료를 받습니다 🙇';
 const HALLS=[
@@ -550,9 +553,9 @@ function renderOrders(h){const box=document.getElementById('oList');box.textCont
    if(r.price){const p=document.createElement('span');p.className='oPrice';p.textContent=r.price;tx.appendChild(p);}
    if(r.desc){const d=document.createElement('small');d.textContent=r.desc;tx.appendChild(d);}
    it.appendChild(tx);
-   const b=document.createElement('button');
-   if(r.link){b.textContent=(/blog\.naver\.com|tistory\.com/.test(r.link)?'📖 글 보고 사기':/바로/.test(r.cat)?'🚪 바로 들어가기':h.btn)+' ↗';b.onclick=()=>{sfx('pop');window.open(r.link,'_blank','noopener,noreferrer');};}
-   else{b.textContent='링크 준비 중';b.disabled=true;}
+   let b;
+   if(r.link){b=document.createElement('a');b.className='oItemBtn';b.href=r.link;b.rel='sponsored noopener';b.target=IN_FRAME?'_top':'_blank';b.textContent=(/blog\.naver\.com|tistory\.com/.test(r.link)?'📖 글 보고 사기':/바로/.test(r.cat)?'🚪 바로 들어가기':h.btn)+' ↗';b.onclick=()=>{try{sfx('pop');}catch(e){}};}
+   else{b=document.createElement('button');b.textContent='링크 준비 중';b.disabled=true;}
    it.appendChild(b);box.appendChild(it);});});}
 function closeHall(){document.getElementById('orderPanel').classList.remove('open');curHall=null;}
 

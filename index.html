@@ -180,6 +180,16 @@ html,body{background:#07070c;}
 .oItem button{border:none;border-radius:11px;padding:9px 11px;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap;background:linear-gradient(135deg,#b08d57,#e9cd8a);color:#1a140a;}
 .oItem button:disabled{background:#2a2830;color:#8a8590;cursor:default;}
 .oEmpty{padding:30px 10px;text-align:center;opacity:.7;font-size:13px;}
+/* 2026-11-21 쿠팡관 메뉴판·골드박스·검색·배너 (주문서 '메뉴'·'검색'·'배너' 줄로 켜짐) */
+#oMenuBtn{display:none;width:auto!important;padding:0 12px;border-radius:17px!important;font-size:13px!important;font-weight:800;}
+#oMenuBtn.on{background:rgba(255,255,255,.38)!important;}
+.oMenu{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:8px 0 4px;}
+.oMenu a,.oMenu span{display:flex;align-items:center;gap:6px;justify-content:center;text-decoration:none;border-radius:12px;padding:11px 8px;font-weight:800;font-size:13px;background:#1d1a14;border:1px solid rgba(216,179,106,.45);color:#f3e6c8;}
+.oMenu a.gold{grid-column:1/-1;background:linear-gradient(135deg,#8a6a2e,#e9cd8a);color:#1a140a;font-size:15px;}
+.oMenu span{opacity:.45;}
+.oWidget{margin:8px 0;border-radius:12px;overflow:hidden;background:#111;border:1px solid #26232a;}
+.oWidget iframe{display:block;width:100%;border:0;}
+.oWidget .lb{font-size:11px;opacity:.6;padding:5px 9px;}
 </style>
 </head>
 <body>
@@ -204,7 +214,7 @@ html,body{background:#07070c;}
 </div>
 <div id="talk" class="glass"></div>
 <div id="orderPanel"><div id="oCard">
-  <div id="oHead"><div class="t"><div id="oTitle">주문서</div><div id="oSub"></div></div><button id="oClose">×</button></div>
+  <div id="oHead"><div class="t"><div id="oTitle">주문서</div><div id="oSub"></div></div><button id="oMenuBtn" title="메뉴판">☰ 메뉴판</button><button id="oClose">×</button></div>
   <div id="oNote"><b>구매하시면 쇼핑몰 주인인 제가 수수료를 받습니다 🙇</b><span id="oDisc"></span></div>
   <div id="oList"></div>
 </div></div>
@@ -539,14 +549,37 @@ function parseCSV(t){const out=[];for(const raw of t.split(/\r?\n/)){const line=
 function loadOrders(h){orders[h.id]=null;
  fetch('주문서/'+encodeURIComponent(h.file)+'.csv?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{orders[h.id]=parseCSV(t);if(curHall===h)renderOrders(h);})
   .catch(()=>{orders[h.id]=[];if(curHall===h)renderOrders(h);});}
+let menuOpen=false;
+const SPECIAL_CATS=['메뉴','검색','배너'];
+/* 쿠팡 위젯(다이나믹 배너·검색창)은 쿠팡 파트너스 공식 주소만, 고정형으로만 (플로팅·커버형 금지) */
+const okWidget=u=>/^https:\/\/(ads-partners\.coupang\.com|coupa\.ng)\//i.test(u||'');
+function widgetBox(r,h){const w=document.createElement('div');w.className='oWidget';
+ const f=document.createElement('iframe');f.src=r.link;f.loading='lazy';f.referrerPolicy='unsafe-url';f.height=/검색/.test(r.cat)?'75':(parseInt(r.price,10)||140);f.title=r.name;w.appendChild(f);
+ if(r.desc){const lb=document.createElement('div');lb.className='lb';lb.textContent=r.desc;w.appendChild(lb);}return w;}
+function renderMenu(h,box,rows){
+ const banner=rows.filter(r=>r.cat==='배너'&&okWidget(r.link));
+ if(menuOpen){const m=document.createElement('div');m.className='oMenu';
+  rows.filter(r=>r.cat==='메뉴').forEach(r=>{let el;
+   if(r.link){el=document.createElement('a');el.href=r.link;el.rel='sponsored noopener';el.target=IN_FRAME?'_top':'_blank';el.onclick=()=>{try{sfx('pop');}catch(e){}};}
+   else el=document.createElement('span');
+   if(/골드/.test(r.name))el.className='gold';
+   el.textContent=r.name+(r.link?' ↗':' · 준비 중');m.appendChild(el);});
+  if(m.childNodes.length)box.appendChild(m);
+  rows.filter(r=>r.cat==='검색').forEach(r=>{if(okWidget(r.link))box.appendChild(widgetBox(r,h));
+   else{const p=document.createElement('div');p.className='oEmpty';p.style.padding='10px';p.textContent='🔎 쿠팡 검색창 준비 중';box.appendChild(p);}});}
+ banner.forEach(r=>box.appendChild(widgetBox(r,h)));}
 function openHall(h,walk){curHall=h;const $=id=>document.getElementById(id);
+ menuOpen=false;const mb=$('oMenuBtn');mb.style.display=h.id==='coupang'?'block':'none';mb.classList.remove('on');
+ mb.onclick=()=>{menuOpen=!menuOpen;mb.classList.toggle('on',menuOpen);renderOrders(h);try{sfx('pop');}catch(e){}};
  $('oHead').style.background=h.css;$('oTitle').textContent=h.emoji+' '+h.name+' 주문서';$('oSub').textContent=h.sub;$('oDisc').textContent=h.disc;
  renderOrders(h);$('orderPanel').classList.add('open');sfx('chime');
  if(walk!==false){const fx=Math.sin(h.ang)*(R_WALK-1.2),fz=Math.cos(h.ang)*(R_WALK-1.2);goto(fx,fz,()=>{player.f.rotation.y=h.ang;});}
  setTimeout(()=>say(h.concierge.f,pick(['어서 오세요, '+h.name+'입니다 ✨','오늘의 세일은 맨 위에 있어요','천천히 골라보세요']),2.6),300);}
-function renderOrders(h){const box=document.getElementById('oList');box.textContent='';const rows=orders[h.id];
+function renderOrders(h){const box=document.getElementById('oList');box.textContent='';let rows=orders[h.id];
  if(h.wait){const p=document.createElement('div');p.className='oEmpty';p.textContent=h.emoji+' '+'🚧 '+h.name+' 내부 공사중입니다. 곧 오픈해요';box.appendChild(p);return;}
  if(rows===null){const p=document.createElement('div');p.className='oEmpty';p.textContent='주문서 불러오는 중…';box.appendChild(p);return;}
+ if(h.id==='coupang')renderMenu(h,box,rows);
+ rows=rows.filter(r=>!SPECIAL_CATS.includes(r.cat));
  if(!rows.length){const p=document.createElement('div');p.className='oEmpty';p.textContent='아직 진열된 상품이 없어요. 곧 채워집니다 ✨';box.appendChild(p);return;}
  const cats=[];rows.forEach(r=>{if(!cats.includes(r.cat))cats.push(r.cat);});
  const rk=c=>/바로/.test(c)?2:/세일/.test(c)?1:0;cats.sort((a,b)=>rk(b)-rk(a));

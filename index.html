@@ -192,6 +192,10 @@ html,body{background:#07070c;}
 .oWidget iframe{display:block;width:100%;border:0;}
 .oWidget .lb{font-size:11px;opacity:.6;padding:5px 9px;}
 .oTopRow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0;align-items:stretch;}.oTopRow.one{grid-template-columns:1fr;}.oTopRow .oWidget{margin:0;}.oGold{display:flex;flex-direction:column;justify-content:center;gap:4px;padding:12px;border-radius:12px;text-decoration:none;color:#1a140a;background:linear-gradient(140deg,#8a6a2e 0%,#d9b25e 45%,#f3e2a8 62%,#b8913f 100%);border:1px solid rgba(246,231,176,.7);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 2px 8px rgba(217,178,94,.22);transition:transform .15s;}.oGold:hover{transform:translateY(-2px);}.oGold:active{transform:translateY(0);}.oGold .hd{display:flex;justify-content:space-between;align-items:center;}.oGold .k{font-size:11px;font-weight:800;opacity:.75;}.oGold b{font-size:20px;font-weight:900;line-height:1.1;letter-spacing:-.02em;}.oGold small{font-size:12px;font-weight:700;opacity:.85;}.oGold .cta{margin-top:4px;align-self:flex-start;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:#1a140a;color:#f3e2a8;}
+/* 11/21 대표: 배너 위·골드박스 가로 띠, 카테고리 접기, 글꼴 가볍게, 설명 또렷하게 */
+.oTopRow{grid-template-columns:1fr!important;}.oGold{flex-direction:row!important;align-items:center;gap:10px!important;padding:10px 12px!important;}.oGold b{font-size:17px!important;font-weight:700!important;white-space:nowrap;}.oGold .mid{flex:1;min-width:0;font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.oGold .cta{margin:0!important;align-self:center!important;font-weight:700!important;white-space:nowrap;}
+.oCat{font-weight:700!important;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;margin:8px 2px 0!important;padding:10px 2px!important;}.oCat .n{font-size:12px;font-weight:500;color:#cfc8ba;}.oCat .ar{display:inline-block;font-style:normal;transition:transform .2s;}.oCat.open .ar{transform:rotate(180deg);}.oGrp{display:none;}.oGrp.open{display:block;padding-top:6px;}
+.oTx b{font-weight:600!important;}#oTitle{font-weight:700!important;}.oItem a.oItemBtn{font-weight:600!important;}.oTx small{opacity:1!important;color:#cfc8ba!important;font-size:12px!important;}.adTag{opacity:1!important;color:#e9cd8a;}
 </style>
 </head>
 <body>
@@ -574,10 +578,7 @@ function renderMenu(h,box,rows){
  const gb=rows.find(r=>r.cat==='메뉴'&&/골드/.test(r.name)&&r.link);
  if(banner.length||gb){const row=document.createElement('div');row.className='oTopRow'+(banner.length&&gb?'':' one');
   banner.forEach(r=>row.appendChild(widgetBox(r,h)));
-  if(gb){const a=document.createElement('a');a.className='oGold';a.href=gb.link;a.rel='sponsored noopener';a.target=IN_FRAME?'_top':'_blank';a.onclick=()=>{try{sfx('pop');}catch(e){}};
-   const hd=document.createElement('div');hd.className='hd';const k=document.createElement('small');k.className='k';k.textContent='쿠팡 타임특가';const tg=document.createElement('span');tg.className='adTag';tg.textContent='광고';hd.append(k,tg);
-   const t=document.createElement('b');t.textContent='골드박스';const s=document.createElement('small');s.textContent=gb.desc.replace(/^\[광고\]\s*/,'');
-   const c=document.createElement('span');c.className='cta';c.textContent='입장하기 ↗';a.append(hd,t,s,c);row.appendChild(a);}
+  if(gb){const a=document.createElement('a');a.className='oGold';a.href=gb.link;a.rel='sponsored noopener';a.target=IN_FRAME?'_top':'_blank';a.onclick=()=>{try{sfx('pop');}catch(e){}};const t=document.createElement('b');t.textContent='골드박스';const m=document.createElement('span');m.className='mid';const tg=document.createElement('span');tg.className='adTag';tg.textContent='광고';m.append(tg,document.createTextNode(gb.desc.replace(/^\[광고\]\s*/,'')));const c=document.createElement('span');c.className='cta';c.textContent='입장하기 ↗';a.append(t,m,c);row.appendChild(a);}
   box.appendChild(row);}}
 function openHall(h,walk){curHall=h;const $=id=>document.getElementById(id);
  menuOpen=false;$('ownerTag').style.display='none';const mb=$('oMenuBtn');mb.style.display=h.id==='coupang'?'block':'none';mb.classList.remove('on');
@@ -586,6 +587,7 @@ function openHall(h,walk){curHall=h;const $=id=>document.getElementById(id);
  renderOrders(h);$('orderPanel').classList.add('open');sfx('chime');
  if(walk!==false){const fx=Math.sin(h.ang)*(R_WALK-1.2),fz=Math.cos(h.ang)*(R_WALK-1.2);goto(fx,fz,()=>{player.f.rotation.y=h.ang;});}
  setTimeout(()=>say(h.concierge.f,pick(['어서 오세요, '+h.name+'입니다 ✨','오늘의 세일은 맨 위에 있어요','천천히 골라보세요']),2.6),300);}
+const CAT_OPEN={};
 function renderOrders(h){const box=document.getElementById('oList');box.textContent='';let rows=orders[h.id];
  if(h.wait){const p=document.createElement('div');p.className='oEmpty';p.textContent=h.emoji+' '+'🚧 '+h.name+' 내부 공사중입니다. 곧 오픈해요';box.appendChild(p);return;}
  if(rows===null){const p=document.createElement('div');p.className='oEmpty';p.textContent='주문서 불러오는 중…';box.appendChild(p);return;}
@@ -594,7 +596,7 @@ function renderOrders(h){const box=document.getElementById('oList');box.textCont
  if(!rows.length){const p=document.createElement('div');p.className='oEmpty';p.textContent='아직 진열된 상품이 없어요. 곧 채워집니다 ✨';box.appendChild(p);return;}
  const cats=[];rows.forEach(r=>{if(!cats.includes(r.cat))cats.push(r.cat);});
  const rk=c=>/세일/.test(c)?3:/^★/.test(c)?2:/바로/.test(c)?-1:0;const dk=c=>{let m=c.match(/(\d+)\/(\d+)/);if(m)return +m[1]*100+ +m[2];m=c.match(/(\d+)월\s*말/);return m?+m[1]*100+31:9999;};cats.sort((a,b)=>rk(b)-rk(a)||(rk(a)===3?dk(a)-dk(b):0));
- cats.forEach(c=>{const hd=document.createElement('div');hd.className='oCat'+(/세일/.test(c)?' sale':'');hd.textContent=(/바로/.test(c)?'🚪 ':/세일/.test(c)?'🔥 ':'')+c;box.appendChild(hd);
+ cats.forEach(c=>{const hd=document.createElement('div');hd.className='oCat'+(/세일/.test(c)?' sale':'');const k=h.id+'|'+c;const tl=document.createElement('span');tl.textContent=(/바로/.test(c)?'🚪 ':/세일/.test(c)?'🔥 ':'')+c;const rt=document.createElement('span');rt.className='n';rt.textContent=rows.filter(r=>r.cat===c).length+'개 ';const ar=document.createElement('i');ar.className='ar';ar.textContent='▾';rt.appendChild(ar);hd.append(tl,rt);box.appendChild(hd);const gp=document.createElement('div');gp.className='oGrp';box.appendChild(gp);if(CAT_OPEN[k]){hd.classList.add('open');gp.classList.add('open');}hd.onclick=()=>{CAT_OPEN[k]=!CAT_OPEN[k];hd.classList.toggle('open');gp.classList.toggle('open');try{sfx('pop');}catch(e){}};
   rows.filter(r=>r.cat===c).forEach(r=>{const it=document.createElement('div');it.className='oItem';
    if(r.img){const im=document.createElement('img');im.className='oImg';im.loading='lazy';im.referrerPolicy='no-referrer';im.alt='';im.src=r.img;im.onerror=()=>im.remove();it.appendChild(im);}
    const tx=document.createElement('div');tx.className='oTx';const n=document.createElement('b');n.textContent=r.name;tx.appendChild(n);
@@ -607,7 +609,7 @@ function renderOrders(h){const box=document.getElementById('oList');box.textCont
    let b;
    if(r.link){b=document.createElement('a');b.className='oItemBtn';b.href=r.link;b.rel='sponsored noopener';b.target=IN_FRAME?'_top':'_blank';b.textContent=(/blog\.naver\.com|tistory\.com/.test(r.link)?'📖 글 보고 사기':/바로/.test(r.cat)?'🚪 바로 들어가기':h.btn)+' ↗';b.onclick=()=>{try{sfx('pop');}catch(e){}};}
    else{b=document.createElement('button');b.textContent='링크 준비 중';b.disabled=true;}
-   it.appendChild(b);box.appendChild(it);});});}
+   it.appendChild(b);gp.appendChild(it);});});}
 function closeHall(){document.getElementById('orderPanel').classList.remove('open');document.getElementById('ownerTag').style.display='';curHall=null;}
 
 /* ---------------- 입력 ---------------- */

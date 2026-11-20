@@ -68,14 +68,43 @@ def build_rows(themes_list):
                 sale_txt = clean(it.get("price_sale"), 20)
                 org_txt = clean(it.get("price_org"), 20)
                 sale, org_v = to_int(sale_txt), to_int(org_txt)
+                if 0 < sale < 100:  # 2026-11-21: '4원' 같은 피드 오류 가격은 손님을 속이게 되니 뺀다
+                    continue
                 price = f"{sale_txt}원" if sale else ""
                 org = f"{org_txt}원" if org_v > sale > 0 else ""
                 rate = (org_v - sale) / org_v if org else 0.0
                 img = https_only(it.get("photo"))
-                prio = 0 if mall in PRIORITY_MALLS else 1
-                items.append((prio, -rate, [mall, name, price, link, mall, img, org]))
-    items.sort(key=lambda x: (x[0], x[1]))
-    return [row for _, _, row in items[:MAX_ITEMS]]
+                items.append({"mall": mall, "sale": sale, "rate": rate,
+                              "row": [mall, name, price, link, mall, img, org]})
+    return arrange(items)
+
+
+LUXURY_MALL = "필웨이"    # 맨 위 명품 진열: 고가 2 + 중가 2 (2026-11-21 대표)
+BARGAIN_MALL = "이유몰"   # 그 밑: 땡처리 먹거리·생필품 전부
+LUXURY_TOP = "★ 명품 진열 · 필웨이"
+BARGAIN_TOP = "★ 이유몰 땡처리 · 먹거리·생필품"
+
+
+def arrange(items):
+    """4시간마다 새로 고른다 → 품절·가격 바뀐 상품이 안 남는다.
+    ① 필웨이 고가 2 + 중가 2(가격 가운데쯤) ② 이유몰 전부 ③ 나머지 할인율 순. 카테고리가 ★로 시작하면 화면 맨 위."""
+    by_rate = lambda x: -x["rate"]
+    lux = sorted([x for x in items if x["mall"] == LUXURY_MALL and x["sale"] > 0], key=lambda x: -x["sale"])
+    picked = lux[:2]
+    rest_lux = lux[2:]
+    if rest_lux:
+        mid = len(rest_lux) // 2
+        picked += rest_lux[max(0, mid - 1):mid + 1]
+    picked_ids = {id(x) for x in picked}
+    bargain = sorted([x for x in items if x["mall"] == BARGAIN_MALL], key=by_rate)
+    others = sorted([x for x in items if id(x) not in picked_ids and x["mall"] != BARGAIN_MALL], key=by_rate)
+    out = []
+    for x in picked:
+        out.append([LUXURY_TOP] + x["row"][1:])
+    for x in bargain:
+        out.append([BARGAIN_TOP] + x["row"][1:])
+    out += [x["row"] for x in others]
+    return out[:MAX_ITEMS]
 
 
 def fetch_many():

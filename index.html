@@ -175,7 +175,7 @@ html,body{background:#07070c;}
 .oPct{color:#ff3b3b;font-weight:900;white-space:nowrap;}
 .oOrg{display:inline-block;width:max-content;font-size:12.5px;font-weight:800;color:#ffffff;letter-spacing:.1px;text-decoration:underline;text-decoration-style:solid;text-decoration-color:#ff3b3b;text-decoration-thickness:1.5px;text-underline-offset:4px;padding-bottom:3px;}
 .oItem img.oImg{width:56px;height:56px;object-fit:cover;border-radius:9px;flex:none;background:#222;}
-.oTx{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;}.oTx b{font-size:14px;}.oPrice{font-size:12.5px;color:#e9cd8a;font-weight:800;}.oTx small{font-size:11px;opacity:.6;}
+.oTx{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;}.oTx b{font-size:14px;}.oPrice{font-size:12.5px;color:#e9cd8a;font-weight:800;}.oTx small{font-size:11px;opacity:.6;}.adTag{display:inline-block;font-size:9px;line-height:13px;padding:0 4px;margin-right:5px;border:1px solid currentColor;border-radius:4px;opacity:.75;vertical-align:1px;}
 .oItem a.oItemBtn{display:inline-block;text-decoration:none;border-radius:11px;padding:9px 11px;font-weight:800;font-size:12px;white-space:nowrap;background:linear-gradient(135deg,#b08d57,#e9cd8a);color:#1a140a;}
 .oItem button{border:none;border-radius:11px;padding:9px 11px;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap;background:linear-gradient(135deg,#b08d57,#e9cd8a);color:#1a140a;}
 .oItem button:disabled{background:#2a2830;color:#8a8590;cursor:default;}
@@ -571,7 +571,7 @@ function renderMenu(h,box,rows){
    else{const p=document.createElement('div');p.className='oEmpty';p.style.padding='10px';p.textContent='🔎 쿠팡 검색창 준비 중';box.appendChild(p);}});}
  banner.forEach(r=>box.appendChild(widgetBox(r,h)));}
 function openHall(h,walk){curHall=h;const $=id=>document.getElementById(id);
- menuOpen=false;const mb=$('oMenuBtn');mb.style.display=h.id==='coupang'?'block':'none';mb.classList.remove('on');
+ menuOpen=false;$('ownerTag').style.display='none';const mb=$('oMenuBtn');mb.style.display=h.id==='coupang'?'block':'none';mb.classList.remove('on');
  mb.onclick=()=>{menuOpen=!menuOpen;mb.classList.toggle('on',menuOpen);renderOrders(h);try{sfx('pop');}catch(e){}};
  $('oHead').style.background=h.css;$('oTitle').textContent=h.emoji+' '+h.name+' 주문서';$('oSub').textContent=h.sub;$('oDisc').textContent=h.disc;
  renderOrders(h);$('orderPanel').classList.add('open');sfx('chime');
@@ -593,13 +593,13 @@ function renderOrders(h){const box=document.getElementById('oList');box.textCont
     if(r.org&&ov>sv&&sv>0){p.textContent='핫딜가 '+r.price+' ';const pc=document.createElement('span');pc.className='oPct';pc.textContent='(-'+Math.round((ov-sv)*100/ov)+'%)';p.appendChild(pc);tx.appendChild(p);
      const o=document.createElement('span');o.className='oOrg';o.textContent='애드픽 표시 원가 '+r.org;tx.appendChild(o);}
     else{p.textContent=r.price;tx.appendChild(p);}}
-   if(r.desc){const d=document.createElement('small');d.textContent=r.desc;tx.appendChild(d);}
+   if(r.desc){const d=document.createElement('small');const ad=/^\[광고\]\s*/.test(r.desc);if(ad){const g=document.createElement('span');g.className='adTag';g.textContent='광고';d.appendChild(g);}d.appendChild(document.createTextNode(r.desc.replace(/^\[광고\]\s*/,'')));tx.appendChild(d);}
    it.appendChild(tx);
    let b;
    if(r.link){b=document.createElement('a');b.className='oItemBtn';b.href=r.link;b.rel='sponsored noopener';b.target=IN_FRAME?'_top':'_blank';b.textContent=(/blog\.naver\.com|tistory\.com/.test(r.link)?'📖 글 보고 사기':/바로/.test(r.cat)?'🚪 바로 들어가기':h.btn)+' ↗';b.onclick=()=>{try{sfx('pop');}catch(e){}};}
    else{b=document.createElement('button');b.textContent='링크 준비 중';b.disabled=true;}
    it.appendChild(b);box.appendChild(it);});});}
-function closeHall(){document.getElementById('orderPanel').classList.remove('open');curHall=null;}
+function closeHall(){document.getElementById('orderPanel').classList.remove('open');document.getElementById('ownerTag').style.display='';curHall=null;}
 
 /* ---------------- 입력 ---------------- */
 function onDown(e){dragging=true;dragMoved=false;lastX=downX=e.clientX;lastY=downY=e.clientY;downT=performance.now();}

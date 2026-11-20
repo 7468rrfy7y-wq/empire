@@ -562,7 +562,7 @@ const SPECIAL_CATS=['메뉴','검색','배너'];
 /* 쿠팡 위젯(다이나믹 배너·검색창)은 쿠팡 파트너스 공식 주소만, 고정형으로만 (플로팅·커버형 금지) */
 const okWidget=u=>/^https:\/\/(ads-partners\.coupang\.com|coupa\.ng)\//i.test(u||'');
 function widgetBox(r,h){const w=document.createElement('div');w.className='oWidget';
- const f=document.createElement('iframe');let src=r.link;if(/ads-partners\.coupang\.com/.test(src)){const W=Math.max(240,Math.min(430,((document.getElementById('oList')||{}).clientWidth||360)-6));src=src.replace(/([?&]width=)\d+/,'$1'+W);}f.src=src;f.loading='lazy';f.referrerPolicy='unsafe-url';f.height=/검색/.test(r.cat)?'75':(parseInt(r.price,10)||140);f.title=r.name;w.appendChild(f);
+ const f=document.createElement('iframe');let src=r.link;if(/ads-partners\.coupang\.com/.test(src)){const W=Math.max(240,Math.min(430,((document.getElementById('oList')||{}).clientWidth||360)-26));src=src.replace(/([?&]width=)\d+/,'$1'+W);}f.src=src;f.loading='lazy';f.referrerPolicy='unsafe-url';f.height=/검색/.test(r.cat)?'75':(parseInt(r.price,10)||140);f.title=r.name;w.appendChild(f);
  if(r.desc){const lb=document.createElement('div');lb.className='lb';lb.textContent=r.desc;w.appendChild(lb);}return w;}
 function renderMenu(h,box,rows){
  const banner=rows.filter(r=>r.cat==='배너'&&okWidget(r.link));

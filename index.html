@@ -546,9 +546,11 @@ function parseCSV(t){const out=[];for(const raw of t.split(/\r?\n/)){const line=
   else if(ch==='"')q=true;else if(ch===','){cells.push(cur);cur='';}else cur+=ch;}cells.push(cur);out.push(cells.map(s=>s.trim()));}
  if(out.length&&out[0][0]==='카테고리')out.shift();
  return out.map(r=>({cat:r[0]||'기타',name:r[1]||'',price:r[2]||'',link:/^https:\/\//i.test(r[3]||'')?r[3]:'',desc:r[4]||'',img:/^https:\/\//i.test(r[5]||'')?r[5]:'',org:r[6]||''})).filter(r=>r.name);}
+/* 2026-11-21: 핫딜관은 '핫딜_고정.csv'(손으로 고른 진열, 봇이 안 건드림)를 먼저, '핫딜.csv'(봇 4시간 자동)를 뒤에 붙인다 */
+const getCSV=f=>fetch('주문서/'+encodeURIComponent(f)+'.csv?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.text():'').then(parseCSV).catch(()=>[]);
 function loadOrders(h){orders[h.id]=null;
- fetch('주문서/'+encodeURIComponent(h.file)+'.csv?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{orders[h.id]=parseCSV(t);if(curHall===h)renderOrders(h);})
-  .catch(()=>{orders[h.id]=[];if(curHall===h)renderOrders(h);});}
+ const files=h.id==='hotdeal'?[h.file+'_고정',h.file]:[h.file];
+ Promise.all(files.map(getCSV)).then(parts=>{orders[h.id]=[].concat(...parts);if(curHall===h)renderOrders(h);});}
 let menuOpen=false;
 const SPECIAL_CATS=['메뉴','검색','배너'];
 /* 쿠팡 위젯(다이나믹 배너·검색창)은 쿠팡 파트너스 공식 주소만, 고정형으로만 (플로팅·커버형 금지) */
@@ -582,7 +584,7 @@ function renderOrders(h){const box=document.getElementById('oList');box.textCont
  rows=rows.filter(r=>!SPECIAL_CATS.includes(r.cat));
  if(!rows.length){const p=document.createElement('div');p.className='oEmpty';p.textContent='아직 진열된 상품이 없어요. 곧 채워집니다 ✨';box.appendChild(p);return;}
  const cats=[];rows.forEach(r=>{if(!cats.includes(r.cat))cats.push(r.cat);});
- const rk=c=>/바로/.test(c)?2:/세일/.test(c)?1:0;cats.sort((a,b)=>rk(b)-rk(a));
+ const rk=c=>/^★/.test(c)?3:/바로/.test(c)?2:/세일/.test(c)?1:0;cats.sort((a,b)=>rk(b)-rk(a));
  cats.forEach(c=>{const hd=document.createElement('div');hd.className='oCat'+(/세일/.test(c)?' sale':'');hd.textContent=(/바로/.test(c)?'🚪 ':/세일/.test(c)?'🔥 ':'')+c;box.appendChild(hd);
   rows.filter(r=>r.cat===c).forEach(r=>{const it=document.createElement('div');it.className='oItem';
    if(r.img){const im=document.createElement('img');im.className='oImg';im.loading='lazy';im.referrerPolicy='no-referrer';im.alt='';im.src=r.img;im.onerror=()=>im.remove();it.appendChild(im);}

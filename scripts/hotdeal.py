@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """EMPIRE 핫딜관 주문서 자동 갱신.
 
-애드픽 핫딜 API(공개 상품 피드, 회원 코드만 필요)를 하루 한 번 불러와서
+애드픽 핫딜 API(공개 상품 피드, 회원 코드만 필요)를 4시간마다(하루 6번) 불러와서
 주문서/핫딜.csv 를 다시 쓴다. 실패하거나 빈 응답이면 기존 파일을 그대로 둔다.
 
 애드픽 규칙: 1분에 1회 이하 호출, 받아 온 결과는 저장해서 재사용.
-→ 깃허브 액션이 하루 1번만 돌리고, 방문자는 이 CSV만 읽는다.
+→ 깃허브 액션이 하루 6번 돌리고(회차마다 65초 간격 6회 호출), 방문자는 이 CSV만 읽는다.
 """
 import csv
 import io
@@ -101,7 +101,7 @@ def main():
         return 0
     kst = datetime.now(timezone(timedelta(hours=9))).strftime("%Y-%m-%d %H:%M")
     buf = io.StringIO()
-    buf.write("# 핫딜관 주문서 — 애드픽 핫딜 API에서 하루 한 번 자동으로 채워져요. 손으로 고치지 마세요.\n")
+    buf.write("# 핫딜관 주문서 — 애드픽 핫딜 API에서 4시간마다 자동으로 채워져요. 손으로 고치지 마세요.\n")
     buf.write(f"# 마지막 갱신: {kst} (한국 시간) · 상품 {len(rows)}개\n")
     w = csv.writer(buf, lineterminator="\n")
     w.writerow(["카테고리", "상품명", "가격", "링크", "한줄설명", "이미지", "원가"])

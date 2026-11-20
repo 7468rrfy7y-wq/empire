@@ -186,7 +186,7 @@ html,body{background:#07070c;}
 <div id="app"></div>
 <div id="hud">
   <div id="sign" class="glass">
-    <b>🏬 EMPIRE 쇼핑몰</b><small>명품관 · <span id="who">손님</span>님 쇼핑 중</small>
+    <b>🏬 EMPIRE 쇼핑몰</b><small>명품관 · <span id="who">손님</span> 쇼핑 중</small>
     <div id="ownerTag">구매하시면 쇼핑몰 주인인 제가 수수료를 받습니다 🙇</div>
   </div>
   <div id="right">
@@ -238,7 +238,7 @@ const HALLS=[
   disc:'이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.',btn:'쿠팡에서 보기',css:'linear-gradient(135deg,#7a0c1d,#c8102e)'},
  {id:'ali',name:'알리관',file:'알리',emoji:'✈️',color:0xc2410c,glow:0xff8a3a,ang:Math.PI*0.68,sub:'GLOBAL SELECT',
   disc:'알리익스프레스 링크는 애드픽 제휴 광고 링크이며, 링크를 통해 구매하면 일정액의 수수료를 받을 수 있습니다.',btn:'알리에서 보기',css:'linear-gradient(135deg,#8a2c06,#e8590c)'},
- {id:'hotdeal',name:'핫딜관',file:'핫딜',emoji:'🔥',color:0x7c2d92,glow:0xff5ad8,ang:-Math.PI*0.68,sub:'TODAY HOT DEAL · 매일 아침 자동 갱신',
+ {id:'hotdeal',name:'핫딜관',file:'핫딜',emoji:'🔥',color:0x7c2d92,glow:0xff5ad8,ang:-Math.PI*0.68,sub:'TODAY HOT DEAL · 4시간마다 자동 갱신',
   disc:'핫딜관 상품 링크는 애드픽 제휴 링크입니다. 이 링크를 통해 구매하시면 쇼핑몰 주인이 수수료를 제공받습니다. 가격은 갱신 시점 기준이라 실제 판매가와 다를 수 있어요.',btn:'특가 보기',css:'linear-gradient(135deg,#4a1260,#b5179e)'},
 ];
 const CONCIERGE_LINES=['어서 오세요, EMPIRE 쇼핑몰입니다','주문은 아래 주문서에서 하시면 됩니다','오늘의 세일은 주문서 맨 위에 있어요','천천히 둘러보세요 ✨'];
@@ -587,7 +587,7 @@ function snap(){const f=document.getElementById('flash');sfx('snap');renderer.re
  const c=document.createElement('canvas');c.width=src.width;c.height=src.height;const x=c.getContext('2d');x.drawImage(src,0,0);
  const s=c.width/420;x.shadowColor='rgba(0,0,0,.6)';x.shadowBlur=8*s;x.fillStyle='rgba(233,205,138,.98)';x.textAlign='right';
  x.font=`${17*s}px "Noto Serif KR",serif`;x.fillText('🏬 EMPIRE 쇼핑몰',c.width-14*s,c.height-30*s);
- x.font=`${11*s}px ${FONT}`;x.fillStyle='rgba(255,255,255,.85)';x.fillText(myName+'님의 명품관 한 컷',c.width-14*s,c.height-13*s);
+ x.font=`${11*s}px ${FONT}`;x.fillStyle='rgba(255,255,255,.85)';x.fillText((myName==='손님'?'손님':myName+'님')+'의 명품관 한 컷',c.width-14*s,c.height-13*s);
  f.classList.add('on');requestAnimationFrame(()=>requestAnimationFrame(()=>f.classList.remove('on')));
  c.toBlob(b=>{if(!b){toast('📸 저장 실패 — 화면 캡처로 찍어주세요');return;}const url=URL.createObjectURL(b),a=document.createElement('a');a.href=url;a.download='온라인백화점_'+Date.now()+'.png';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);toast('📸 사진 저장!');},'image/png');}
 
@@ -606,7 +606,7 @@ function bindUI(){const $=id=>document.getElementById(id);
  try{const n=localStorage.getItem('dept_nick');if(n)$('nick').value=n;}catch(e){}
  $('nick').addEventListener('keydown',e=>{if(e.key==='Enter')$('go').click();});
  $('go').onclick=()=>{myName=($('nick').value||'손님').trim().slice(0,8)||'손님';try{localStorage.setItem('dept_nick',myName);}catch(e){}
-  $('who').textContent=myName;player.f.remove(player.f.userData.tag);addTag(player.f,myName,0,1.98,false);
+  $('who').textContent=myName==='손님'?'손님':myName+'님';player.f.remove(player.f.userData.tag);addTag(player.f,myName,0,1.98,false);
   audioStart();$('enter').classList.add('hide');setTimeout(()=>$('enter').remove(),800);
   $('hud').classList.add('on');$('bar').classList.add('on');entered=true;netStart();
   camGoal={a:0,t:0.46,d:innerWidth<innerHeight?32:27,slow:true};

@@ -93,12 +93,12 @@ def fetch_many():
 def main():
     batches = fetch_many()
     if not batches:
-        print("API 실패, 기존 주문서 유지")
-        return 0
+        print("API 실패, 기존 주문서 유지 — 실패(1)로 끝내 GitHub 알림")
+        return 1
     rows = build_rows(batches)
     if not rows:
-        print("받아 온 상품이 없어서 기존 주문서 유지")
-        return 0
+        print("받아 온 상품이 없어서 기존 주문서 유지 — 실패(1)로 끝내 GitHub 알림")
+        return 1
     kst = datetime.now(timezone(timedelta(hours=9))).strftime("%Y-%m-%d %H:%M")
     buf = io.StringIO()
     buf.write("# 핫딜관 주문서 — 애드픽 핫딜 API에서 4시간마다 자동으로 채워져요. 손으로 고치지 마세요.\n")

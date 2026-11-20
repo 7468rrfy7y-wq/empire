@@ -185,7 +185,7 @@ html,body{background:#07070c;}
 #oMenuBtn.on{background:rgba(255,255,255,.38)!important;}
 .oMenu{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:8px 0 4px;}
 .oMenu a,.oMenu span{display:flex;align-items:center;gap:6px;justify-content:center;text-decoration:none;border-radius:12px;padding:11px 8px;font-weight:800;font-size:13px;background:#1d1a14;border:1px solid rgba(216,179,106,.45);color:#f3e6c8;}
-.oMenu a.gold{grid-column:1/-1;background:linear-gradient(135deg,#8a6a2e,#e9cd8a);color:#1a140a;font-size:15px;}
+.oMenu a.gold{grid-column:1/-1;flex-direction:column;gap:1px;padding:7px 10px;background:linear-gradient(135deg,#7a5a22,#d9b25e 42%,#f6e7b0 58%,#b8913f);color:#1a140a;font-size:13px;border:1px solid rgba(246,231,176,.75);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 2px 8px rgba(217,178,94,.25);}.oMenu a.gold small{font-size:10.5px;font-weight:700;opacity:.82;}
 .oMenu span{opacity:.45;}
 .oWidget{margin:8px 0;border-radius:12px;overflow:hidden;background:#111;border:1px solid #26232a;}
 .oWidget iframe{display:block;width:100%;border:0;}
@@ -564,7 +564,7 @@ function renderMenu(h,box,rows){
   rows.filter(r=>r.cat==='메뉴').forEach(r=>{let el;
    if(r.link){el=document.createElement('a');el.href=r.link;el.rel='sponsored noopener';el.target=IN_FRAME?'_top':'_blank';el.onclick=()=>{try{sfx('pop');}catch(e){}};}
    else el=document.createElement('span');
-   if(/골드/.test(r.name))el.className='gold';
+   if(/골드/.test(r.name)){el.className='gold';const t=document.createElement('b');t.textContent=r.name+(r.link?' ↗':' · 준비 중');el.appendChild(t);if(r.desc){const s=document.createElement('small');s.textContent=r.desc;el.appendChild(s);}}else
    el.textContent=r.name+(r.link?' ↗':' · 준비 중');m.appendChild(el);});
   if(m.childNodes.length)box.appendChild(m);
   rows.filter(r=>r.cat==='검색').forEach(r=>{if(okWidget(r.link))box.appendChild(widgetBox(r,h));
@@ -584,7 +584,7 @@ function renderOrders(h){const box=document.getElementById('oList');box.textCont
  rows=rows.filter(r=>!SPECIAL_CATS.includes(r.cat));
  if(!rows.length){const p=document.createElement('div');p.className='oEmpty';p.textContent='아직 진열된 상품이 없어요. 곧 채워집니다 ✨';box.appendChild(p);return;}
  const cats=[];rows.forEach(r=>{if(!cats.includes(r.cat))cats.push(r.cat);});
- const rk=c=>/^★/.test(c)?3:/바로/.test(c)?2:/세일/.test(c)?1:0;cats.sort((a,b)=>rk(b)-rk(a));
+ const rk=c=>/세일/.test(c)?3:/^★/.test(c)?2:/바로/.test(c)?-1:0;const dk=c=>{let m=c.match(/(\d+)\/(\d+)/);if(m)return +m[1]*100+ +m[2];m=c.match(/(\d+)월\s*말/);return m?+m[1]*100+31:9999;};cats.sort((a,b)=>rk(b)-rk(a)||(rk(a)===3?dk(a)-dk(b):0));
  cats.forEach(c=>{const hd=document.createElement('div');hd.className='oCat'+(/세일/.test(c)?' sale':'');hd.textContent=(/바로/.test(c)?'🚪 ':/세일/.test(c)?'🔥 ':'')+c;box.appendChild(hd);
   rows.filter(r=>r.cat===c).forEach(r=>{const it=document.createElement('div');it.className='oItem';
    if(r.img){const im=document.createElement('img');im.className='oImg';im.loading='lazy';im.referrerPolicy='no-referrer';im.alt='';im.src=r.img;im.onerror=()=>im.remove();it.appendChild(im);}

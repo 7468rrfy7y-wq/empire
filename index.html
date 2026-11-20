@@ -577,8 +577,8 @@ function renderMenu(h,box,rows){
    else{const p=document.createElement('div');p.className='oEmpty';p.style.padding='10px';p.textContent='🔎 쿠팡 검색창 준비 중';box.appendChild(p);}});}
  const gb=rows.find(r=>r.cat==='메뉴'&&/골드/.test(r.name)&&r.link);
  if(banner.length||gb){const row=document.createElement('div');row.className='oTopRow'+(banner.length&&gb?'':' one');
-  banner.forEach(r=>row.appendChild(widgetBox(r,h)));
-  if(gb){const a=document.createElement('a');a.className='oGold';a.href=gb.link;a.rel='sponsored noopener';a.target=IN_FRAME?'_top':'_blank';a.onclick=()=>{try{sfx('pop');}catch(e){}};const t=document.createElement('b');t.textContent='골드박스';const m=document.createElement('span');m.className='mid';const tg=document.createElement('span');tg.className='adTag';tg.textContent='광고';m.append(tg,document.createTextNode(gb.desc.replace(/^\[광고\]\s*/,'')));const c=document.createElement('span');c.className='cta';c.textContent='입장하기 ↗';a.append(t,m,c);row.appendChild(a);}
+  
+  if(gb){const a=document.createElement('a');a.className='oGold';a.href=gb.link;a.rel='sponsored noopener';a.target=IN_FRAME?'_top':'_blank';a.onclick=()=>{try{sfx('pop');}catch(e){}};const t=document.createElement('b');t.textContent='골드박스';const m=document.createElement('span');m.className='mid';const tg=document.createElement('span');tg.className='adTag';tg.textContent='광고';m.append(tg,document.createTextNode(gb.desc.replace(/^\[광고\]\s*/,'')));const c=document.createElement('span');c.className='cta';c.textContent='입장하기 ↗';a.append(t,m,c);row.appendChild(a);}banner.forEach(r=>row.appendChild(widgetBox(r,h)));
   box.appendChild(row);}}
 function openHall(h,walk){curHall=h;const $=id=>document.getElementById(id);
  menuOpen=false;$('ownerTag').style.display='none';const mb=$('oMenuBtn');mb.style.display=h.id==='coupang'?'block':'none';mb.classList.remove('on');

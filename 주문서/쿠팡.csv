@@ -2,18 +2,29 @@
 # 카테고리를 '지금 세일'로 쓰면 맨 위에 떠요. 링크가 비어 있으면 '링크 준비 중'. #으로 시작하는 줄은 무시.
 # 2026-11-21 특수 줄 (상품 목록에는 안 나옴):
 #  메뉴 = 쿠팡관 '☰ 메뉴판' 버튼 안의 바로가기. 이름에 '골드'가 들어가면 맨 위 금색 큰 버튼.
-#  검색 = 쿠팡 파트너스 '검색창 위젯' 주소(https://ads-partners.coupang.com/... 만 됨). 메뉴판 안에 뜸.
-#  배너 = 쿠팡 파트너스 '다이나믹 배너' 주소(https://ads-partners.coupang.com/... 만 됨). 가격 칸 = 높이(px). 쿠팡관 맨 위 고정, 움직이는 배너 금지.
-#  링크는 쿠팡 파트너스에서 만든 것만. 비어 있으면 '준비 중'으로 보임.
+#  검색 = 쿠팡 파트너스 '검색창 위젯' 주소(https://coupa.ng/… 또는 ads-partners.coupang.com/… 만 됨). 메뉴판 안에 뜸.
+#  배너 = 쿠팡 파트너스 '다이나믹 배너' 주소. 가격 칸 = 높이(px). 쿠팡관 맨 위 고정, 움직이는 배너 금지.
+#  링크는 전부 쿠팡 파트너스 채널 'empiremall'로 만든 것 (2026-11-21 총괄, 대표 크롬). 기획전은 마감 지나면 줄 지우기.
 카테고리,상품명,가격,링크,한줄설명
-메뉴,🔥 골드박스 · 오늘의 특가,,,매일 바뀌는 쿠팡 타임특가
-메뉴,⏰ 마감 임박 기획전,,,곧 끝나는 기획전 모음
-메뉴,🚀 로켓배송,,,
-메뉴,🥬 로켓프레시,,,
-메뉴,💄 뷰티,,,
-메뉴,📱 가전·디지털,,,
-메뉴,🧸 완구·취미,,,
-메뉴,🏠 생활용품,,,
-검색,쿠팡 검색,,,
-배너,쿠팡 추천 상품,140,,쿠팡 파트너스 배너 — 구매 시 수수료를 받습니다
+메뉴,🔥 골드박스 · 오늘의 특가,,https://link.coupang.com/a/iQdTlhp5tQ,매일 바뀌는 쿠팡 타임특가
+메뉴,🚀 로켓배송,,https://link.coupang.com/a/iQdUqKSPgi,
+메뉴,🥬 로켓프레시,,https://link.coupang.com/a/iQdVB4197k,
+메뉴,💄 뷰티,,https://link.coupang.com/a/iQdUxfUFci,
+메뉴,📱 가전·디지털,,https://link.coupang.com/a/iQdUAyhQQK,
+메뉴,🧸 완구·취미,,https://link.coupang.com/a/iQdUDN60HY,
+메뉴,🏠 생활용품,,https://link.coupang.com/a/iQdUG0MZ6y,
+검색,쿠팡 검색,,https://coupa.ng/crfvvQ,
+배너,쿠팡 추천 상품,140,https://ads-partners.coupang.com/widgets.html?id=1052815&template=carousel&trackingCode=AF9457123&subId=empiremall&width=430&height=140&tsource=,쿠팡 파트너스 배너 — 구매 시 수수료를 받습니다
+지금 세일 · 11/22(일) 마감,다이어리 & 캘린더,,https://link.coupang.com/a/iQd5cq7xG8,2027 다이어리·캘린더 기획전
+지금 세일 · 11/22(일) 마감,펫용품 특가위크,,https://link.coupang.com/a/iQd6gux4nY,반려동물용품 특가
+지금 세일 · 11/22(일) 마감,R.LUX 윈터 뷰티,,https://link.coupang.com/a/iQd6w3uAA8,럭셔리 뷰티 겨울 기획전
+지금 세일 · 11/22(일) 마감,육아 필수템 특가,,https://link.coupang.com/a/iQd7kVc8Yu,출산·유아동
+지금 세일 · 11/22(일) 마감,로켓뷰티 메디컬 뷰티,,https://link.coupang.com/a/iQd7BlFTFY,더마·메디컬 화장품
+지금 세일 · 11/22(일) 마감,월간여성 빅세일,,https://link.coupang.com/a/iQd7R3sxGK,생활용품
+지금 세일 · 11월 말까지,R.LUX 럭셔리 패션 블랙 프라이데이,,https://link.coupang.com/a/iQd5JoxgjY,~11/30 명품 패션
+지금 세일 · 11월 말까지,놀이 & 취미용품 SALE,,https://link.coupang.com/a/iQd5ZX5xyS,~11/29 완구·취미
+지금 세일 · 11월 말까지,샤오미 18 Pro Max,,https://link.coupang.com/a/iQd6NCaupU,~11/29 가전디지털
+연말 기획전,로켓프레시 하우스 오브 테이스트,,https://link.coupang.com/a/iQd5sTes8a,~12/6
+연말 기획전,로켓프레시 이달의 프리미엄,,https://link.coupang.com/a/iQd64cisOO,~12/6
+연말 기획전,케이스티파이,,https://link.coupang.com/a/iQd4VKtEzY,~12/17 폰 케이스
 바로 들어가기,쿠팡 입장,,https://link.coupang.com/a/iIWM1goMRU,들어가서 아무거나 사도 돼요
